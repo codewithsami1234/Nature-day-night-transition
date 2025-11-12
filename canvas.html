@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>HTML5 Canvas use</title>
+<style>
+  body {
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: #222;
+  }
+  canvas {
+    border-radius: 16px;
+    box-shadow: 0 0 30px rgba(255,255,255,0.3);
+  }
+</style>
+</head>
+<body>
+<canvas id="scene" width="600" height="350"></canvas>
+<script>
+const canvas = document.getElementById("scene");
+const ctx = canvas.getContext("2d");
+
+let cloudX1 = 0;
+let cloudX2 = 250;
+let time = 0; // 0 → sun at left tree, 1 → end of night
+
+// Draw cloud
+function drawCloud(x, y) {
+  ctx.fillStyle = "white";
+  ctx.beginPath();
+  ctx.arc(x, y, 20, 0, Math.PI * 2);
+  ctx.arc(x + 25, y - 10, 25, 0, Math.PI * 2);
+  ctx.arc(x + 55, y, 20, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+// Draw tree
+function drawTree(x, y) {
+  ctx.fillStyle = "#8B4513";
+  ctx.fillRect(x - 10, y, 20, 60);
+  ctx.beginPath();
+  ctx.fillStyle = "#228B22";
+  ctx.arc(x, y - 10, 35, 0, Math.PI * 2);
+  ctx.arc(x - 25, y + 5, 25, 0, Math.PI * 2);
+  ctx.arc(x + 25, y + 5, 25, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+// Draw house
+function drawHouse(x, y) {
+  ctx.fillStyle = "#ffcc66";
+  ctx.fillRect(x, y, 100, 70);
+  ctx.beginPath();
+  ctx.moveTo(x - 10, y);
+  ctx.lineTo(x + 50, y - 40);
+  ctx.lineTo(x + 110, y);
+  ctx.closePath();
+  ctx.fillStyle = "#b5651d";
+  ctx.fill();
+  ctx.fillStyle = "#5d4037";
+  ctx.fillRect(x + 40, y + 30, 25, 40);
+  ctx.fillStyle = "#add8e6";
+  ctx.fillRect(x + 10, y + 20, 20, 20);
+  ctx.strokeStyle = "#444";
+  ctx.strokeRect(x + 10, y + 20, 20, 20);
+}
+
+// Sky color changes from bright → grey → black
+function getSkyColor(t) {
+  if(t < 0.5) {
+    // Bright day while sun moves
+    return "#87f7fe";
+  } else if(t < 0.75) {
+    // Grey as sun reaches right
+    const greyValue = Math.floor(180 - 180 * (t-0.5)/0.25); 
+    return `rgb(${greyValue}, ${greyValue}, ${greyValue})`;
+  } else {
+    // Night
+    return "#0b0c2b";
+  }
+}
+
+function animate() {
+  time += 0.0005;
+  if(time>1) time=0;
+
+  // Sky
+  ctx.fillStyle = getSkyColor(time);
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+
+  // Ground
+  ctx.fillStyle = "#2e8b57";
+  ctx.fillRect(0,280,canvas.width,70);
+
+  const houseX = 250;
+  const houseY = 210;
+
+  // Sun: moves left tree → right tree
+  if(time < 0.5) {
+    const sunX = 100 + (500-100)*(time/0.5); // left tree x=100 → right tree x=500
+    const sunY = houseY - 150; // fixed
+    const grad = ctx.createRadialGradient(sunX, sunY, 5, sunX, sunY, 30);
+    grad.addColorStop(0,"yellow");
+    grad.addColorStop(1,"orange");
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.arc(sunX, sunY,30,0,Math.PI*2);
+    ctx.fill();
+  }
+
+  // Moon: appears after sun sets
+  if(time >= 0.75) {
+    const moonX = 400;
+    const moonY = houseY - 150;
+    const grad = ctx.createRadialGradient(moonX, moonY, 5, moonX, moonY, 25);
+    grad.addColorStop(0,"#f0f0f0");
+    grad.addColorStop(1,"#cccccc");
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.arc(moonX, moonY,25,0,Math.PI*2);
+    ctx.fill();
+  }
+
+  // Clouds
+  drawCloud(cloudX1, 80);
+  drawCloud(cloudX2, 100);
+
+  // Trees
+  drawTree(100,220);
+  drawTree(500,240);
+
+  // House
+  drawHouse(houseX,houseY);
+
+  // Text
+  ctx.font = "24px 'Segoe UI'";
+  ctx.fillStyle = "white";
+  ctx.shadowColor = "black";
+  ctx.shadowBlur = 5;
+  ctx.fillText("Beautiful Canvas Scene",150,40);
+
+  // Animate clouds
+  cloudX1 += 0.5;
+  cloudX2 += 0.3;
+  if(cloudX1>canvas.width+60) cloudX1=-100;
+  if(cloudX2>canvas.width+60) cloudX2=-150;
+
+  requestAnimationFrame(animate);
+}
+
+animate();
+</script>
+</body>
+</html>
