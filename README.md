@@ -3,11 +3,11 @@
 A visually appealing **day-to-night animation** built using **HTML5 Canvas** and **JavaScript**. The scene features a **moving sun**, **transitioning sky colors**, a **moon at night**, clouds, trees, a house, and animated scenery.
 
 ---
-
 ## Live Demo
 
 Try it live in your browser:  
-[🌐 View Live Demo](https://your-live-demo-link.com)
+[🌐 View Live Demo](https://codewithsami1234.github.io/Nature-day-night-transition/)
+
 
 ---
 
