@@ -6,7 +6,7 @@ A visually appealing **day-to-night animation** built using **HTML5 Canvas** and
 ## Live Demo
 
 Try it live in your browser:  
-[🌐 View Live Demo](https://codewithsami1234.github.io/Nature-day-night-transition/)
+[🌐 View Live Demo]https://codewithsami1234.github.io/Nature-day-night-transition/
 
 
 ---
